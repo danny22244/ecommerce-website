@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product — VELOUR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --deep: #111111; --card: #161616; --border: #2a2a2a;
+      --gold: #c9a84c; --gold-light: #e8c96a; --white: #f5f0e8; --muted: #888880;
+      --font-display: 'Cormorant Garamond', serif; --font-body: 'Montserrat', sans-serif;
+    }
+    body { background: var(--black); color: var(--white); font-family: var(--font-body); }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 5vw; background: rgba(10,10,10,0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); }
+    .nav-logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; text-decoration: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--white); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .cart-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--white); font-size: 1.2rem; }
+    .cart-count { position: absolute; top: -6px; right: -8px; background: var(--gold); color: var(--black); font-size: 0.6rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    .product-page { padding: 6rem 5vw 4rem; max-width: 1200px; margin: 0 auto; }
+    .breadcrumb { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 2rem; }
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+
+    .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+    /* IMAGE SIDE */
+    .product-gallery { display: flex; flex-direction: column; gap: 1rem; }
+    .main-img {
+      width: 100%; aspect-ratio: 3/4; background: var(--deep);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8rem; border: 1px solid var(--border);
+      position: relative;
+    }
+    .img-badge { position: absolute; top: 1.5rem; left: 1.5rem; background: var(--gold); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; padding: 0.4rem 0.9rem; text-transform: uppercase; }
+    .thumb-row { display: flex; gap: 0.8rem; }
+    .thumb { width: 80px; aspect-ratio: 1; background: var(--deep); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: border-color 0.2s; }
+    .thumb:hover, .thumb.active { border-color: var(--gold); }
+
+    /* INFO SIDE */
+    .product-tag { font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.8rem; }
+    .product-title { font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; line-height: 1.1; margin-bottom: 1rem; }
+    .product-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .stars { color: var(--gold); font-size: 0.9rem; }
+    .rating-count { font-size: 0.72rem; color: var(--muted); }
+    .product-price-big { font-family: var(--font-display); font-size: 2.2rem; color: var(--gold); font-weight: 600; margin-bottom: 1.5rem; }
+    .product-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.8; font-weight: 300; margin-bottom: 2rem; }
+
+    .option-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.8rem; }
+    .size-options { display: flex; gap: 0.6rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
+    .size-btn { width: 44px; height: 44px; background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .size-btn:hover, .size-btn.active { border-color: var(--gold); color: var(--white); }
+
+    .qty-row { display: flex; align-items: center; gap: 0; margin-bottom: 2rem; }
+    .qty-btn { width: 44px; height: 44px; background: var(--card); border: 1px solid var(--border); color: var(--white); font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+    .qty-btn:hover { background: var(--border); }
+    .qty-val { width: 60px; height: 44px; background: var(--deep); border: 1px solid var(--border); border-left: none; border-right: none; color: var(--white); font-family: var(--font-body); font-size: 0.9rem; text-align: center; }
+
+    .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { padding: 0.9rem 2.2rem; font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: 1px solid var(--gold); transition: all 0.3s; }
+    .btn-gold { background: var(--gold); color: var(--black); }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-outline { background: transparent; color: var(--gold); }
+    .btn-outline:hover { background: var(--gold); color: var(--black); }
+
+    .product-meta { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.6rem; }
+    .meta-item { font-size: 0.75rem; color: var(--muted); display: flex; gap: 0.5rem; }
+    .meta-item span { color: var(--white); font-weight: 600; }
+
+    /* RELATED */
+    .related { padding: 4rem 5vw; border-top: 1px solid var(--border); }
+    .section-tag { font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.8rem; }
+    .section-title { font-family: var(--font-display); font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .section-line { width: 40px; height: 1px; background: var(--gold); margin-bottom: 2rem; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.2rem; }
+    .product-card { background: var(--card); border: 1px solid var(--border); overflow: hidden; transition: border-color 0.3s, transform 0.3s; cursor: pointer; }
+    .product-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .product-img { width: 100%; aspect-ratio: 3/4; background: var(--deep); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .product-info { padding: 1rem; }
+    .product-name { font-family: var(--font-display); font-size: 1rem; font-weight: 400; color: var(--white); margin-bottom: 0.3rem; }
+    .product-price { font-family: var(--font-display); font-size: 1rem; color: var(--gold); }
+
+    footer { background: var(--deep); border-top: 1px solid var(--border); padding: 2rem 5vw; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: var(--font-display); font-size: 1.4rem; color: var(--gold); font-weight: 700; letter-spacing: 0.2em; }
+    footer p { font-size: 0.72rem; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .product-layout { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">VELOUR</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="cart-btn" onclick="window.location.href='cart.html'">🛒 <span class="cart-count">0</span></button>
+</nav>
+
+<div class="product-page">
+  <div class="breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / Obsidian Trench Coat</div>
+  <div class="product-layout">
+    <div class="product-gallery">
+      <div class="main-img">🧥<span class="img-badge">New Arrival</span></div>
+      <div class="thumb-row">
+        <div class="thumb active">🧥</div>
+        <div class="thumb">🖤</div>
+        <div class="thumb">✨</div>
+      </div>
+    </div>
+    <div class="product-info-side">
+      <p class="product-tag">Women · Outerwear</p>
+      <h1 class="product-title">Obsidian Trench Coat</h1>
+      <div class="product-rating">
+        <span class="stars">★★★★★</span>
+        <span class="rating-count">(48 reviews)</span>
+      </div>
+      <div class="product-price-big">$289</div>
+      <p class="product-desc">A masterpiece in structured elegance. This trench coat is crafted from premium water-resistant fabric with a luxurious satin lining. Features include a double-breasted front, belt tie waist, and deep side pockets. Designed to be your most worn statement piece.</p>
+
+      <p class="option-label">Select Size</p>
+      <div class="size-options">
+        <button class="size-btn">XS</button>
+        <button class="size-btn active">S</button>
+        <button class="size-btn">M</button>
+        <button class="size-btn">L</button>
+        <button class="size-btn">XL</button>
+      </div>
+
+      <p class="option-label">Quantity</p>
+      <div class="qty-row">
+        <button class="qty-btn" id="dec">−</button>
+        <input class="qty-val" id="qty" type="text" value="1" readonly/>
+        <button class="qty-btn" id="inc">+</button>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-gold" onclick="window.location.href='cart.html'">Add to Cart</button>
+        <button class="btn btn-outline">♡ Wishlist</button>
+      </div>
+
+      <div class="product-meta">
+        <div class="meta-item">Material: <span>Premium Wool Blend</span></div>
+        <div class="meta-item">Fit: <span>Relaxed / Oversized</span></div>
+        <div class="meta-item">Shipping: <span>Free on orders over $150</span></div>
+        <div class="meta-item">Returns: <span>30-day free returns</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="related">
+  <p class="section-tag">You May Also Like</p>
+  <h2 class="section-title">Related <em>Pieces</em></h2>
+  <div class="section-line"></div>
+  <div class="related-grid">
+    <div class="product-card" onclick="window.location.href='product.html?id=2'">
+      <div class="product-img">👗</div>
+      <div class="product-info"><div class="product-name">Noir Silk Dress</div><div class="product-price">$195</div></div>
+    </div>
+    <div class="product-card" onclick="window.location.href='product.html?id=5'">
+      <div class="product-img">👜</div>
+      <div class="product-info"><div class="product-name">Velvet Evening Bag</div><div class="product-price">$145</div></div>
+    </div>
+    <div class="product-card" onclick="window.location.href='product.html?id=3'">
+      <div class="product-img">🧣</div>
+      <div class="product-info"><div class="product-name">Cashmere Wrap Scarf</div><div class="product-price">$89</div></div>
+    </div>
+    <div class="product-card" onclick="window.location.href='product.html?id=6'">
+      <div class="product-img">🧤</div>
+      <div class="product-info"><div class="product-name">Leather Gloves</div><div class="product-price">$75</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">VELOUR</span>
+  <p>© 2026 VELOUR. All rights reserved.</p>
+</footer>
+
+<script>
+  let qty = 1;
+  document.getElementById('inc').onclick = () => { qty++; document.getElementById('qty').value = qty; };
+  document.getElementById('dec').onclick = () => { if(qty > 1) { qty--; document.getElementById('qty').value = qty; } };
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.thumb').forEach(t => {
+    t.addEventListener('click', function() {
+      document.querySelectorAll('.thumb').forEach(th => th.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

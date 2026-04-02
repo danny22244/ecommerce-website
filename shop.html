@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — VELOUR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --deep: #111111; --card: #161616; --border: #2a2a2a;
+      --gold: #c9a84c; --gold-light: #e8c96a; --white: #f5f0e8; --muted: #888880;
+      --font-display: 'Cormorant Garamond', serif; --font-body: 'Montserrat', sans-serif;
+    }
+    body { background: var(--black); color: var(--white); font-family: var(--font-body); }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 5vw; background: rgba(10,10,10,0.95);
+      border-bottom: 1px solid var(--border); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; text-decoration: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--white); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .cart-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--white); font-size: 1.2rem; }
+    .cart-count { position: absolute; top: -6px; right: -8px; background: var(--gold); color: var(--black); font-size: 0.6rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 8rem 5vw 3rem;
+      background: linear-gradient(135deg, #0a0a0a, #1a1208);
+      border-bottom: 1px solid var(--border);
+    }
+    .breadcrumb { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+    .page-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; }
+    .page-title em { font-style: italic; color: var(--gold); }
+    .page-count { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; letter-spacing: 0.1em; }
+
+    /* SHOP LAYOUT */
+    .shop-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; min-height: 80vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--deep); border-right: 1px solid var(--border);
+      padding: 2.5rem 1.5rem; position: sticky; top: 65px; height: fit-content;
+    }
+    .filter-group { margin-bottom: 2rem; }
+    .filter-title { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 1rem; }
+    .filter-options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .filter-btn {
+      background: none; border: none; color: var(--muted); font-family: var(--font-body);
+      font-size: 0.8rem; font-weight: 400; text-align: left; cursor: pointer;
+      padding: 0.4rem 0; letter-spacing: 0.05em; transition: color 0.2s; border-bottom: 1px solid transparent;
+    }
+    .filter-btn:hover, .filter-btn.active { color: var(--white); border-bottom-color: var(--gold); }
+    .price-range { display: flex; flex-direction: column; gap: 0.6rem; }
+    .price-range input { width: 100%; accent-color: var(--gold); }
+    .price-label { font-size: 0.75rem; color: var(--muted); }
+
+    /* PRODUCTS AREA */
+    .products-area { padding: 2.5rem; }
+    .sort-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .sort-bar select {
+      background: var(--card); border: 1px solid var(--border); color: var(--white);
+      font-family: var(--font-body); font-size: 0.75rem; padding: 0.5rem 1rem;
+      letter-spacing: 0.1em; outline: none; cursor: pointer;
+    }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem;
+    }
+    .product-card {
+      background: var(--card); border: 1px solid var(--border); overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s; cursor: pointer;
+    }
+    .product-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .product-img { width: 100%; aspect-ratio: 3/4; background: var(--deep); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
+    .product-badge { position: absolute; top: 0.8rem; left: 0.8rem; background: var(--gold); color: var(--black); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.15em; padding: 0.25rem 0.6rem; text-transform: uppercase; }
+    .product-info { padding: 1rem; }
+    .product-name { font-family: var(--font-display); font-size: 1rem; font-weight: 400; color: var(--white); margin-bottom: 0.2rem; }
+    .product-cat { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.7rem; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: var(--font-display); font-size: 1.1rem; color: var(--gold); font-weight: 600; }
+    .add-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.35rem 0.8rem; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: var(--font-body); }
+    .add-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* FOOTER */
+    footer { background: var(--deep); border-top: 1px solid var(--border); padding: 2rem 5vw; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--font-display); font-size: 1.4rem; color: var(--gold); font-weight: 700; letter-spacing: 0.2em; }
+    footer p { font-size: 0.72rem; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .shop-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">VELOUR</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html" class="active">Shop</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="cart-btn" onclick="window.location.href='cart.html'">🛒 <span class="cart-count">0</span></button>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="index.html">Home</a> / Shop</div>
+  <h1 class="page-title">All <em>Collections</em></h1>
+  <p class="page-count">104 products</p>
+</div>
+
+<div class="shop-layout">
+  <aside class="sidebar">
+    <div class="filter-group">
+      <div class="filter-title">Category</div>
+      <div class="filter-options">
+        <button class="filter-btn active">All Items</button>
+        <button class="filter-btn">Women</button>
+        <button class="filter-btn">Men</button>
+        <button class="filter-btn">Accessories</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-title">Price Range</div>
+      <div class="price-range">
+        <input type="range" min="0" max="1000" value="500"/>
+        <span class="price-label">Up to $500</span>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-title">Size</div>
+      <div class="filter-options">
+        <button class="filter-btn">XS</button>
+        <button class="filter-btn">S</button>
+        <button class="filter-btn">M</button>
+        <button class="filter-btn">L</button>
+        <button class="filter-btn">XL</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-title">Sort By</div>
+      <div class="filter-options">
+        <button class="filter-btn active">Featured</button>
+        <button class="filter-btn">Price: Low–High</button>
+        <button class="filter-btn">Price: High–Low</button>
+        <button class="filter-btn">Newest</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="products-area">
+    <div class="sort-bar">
+      <span style="font-size:0.75rem; color:var(--muted);">Showing 104 results</span>
+      <select><option>Featured</option><option>Newest</option><option>Price ↑</option><option>Price ↓</option></select>
+    </div>
+    <div class="products-grid">
+      <!-- Row 1 -->
+      <div class="product-card" onclick="window.location.href='product.html?id=1'">
+        <div class="product-img">🧥<span class="product-badge">New</span></div>
+        <div class="product-info">
+          <div class="product-name">Obsidian Trench Coat</div>
+          <div class="product-cat">Women · Outerwear</div>
+          <div class="product-footer"><span class="product-price">$289</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=2'">
+        <div class="product-img">👗</div>
+        <div class="product-info">
+          <div class="product-name">Noir Silk Dress</div>
+          <div class="product-cat">Women · Dresses</div>
+          <div class="product-footer"><span class="product-price">$195</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=3'">
+        <div class="product-img">🧣<span class="product-badge">Sale</span></div>
+        <div class="product-info">
+          <div class="product-name">Cashmere Wrap Scarf</div>
+          <div class="product-cat">Accessories</div>
+          <div class="product-footer"><span class="product-price">$89</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=4'">
+        <div class="product-img">👔</div>
+        <div class="product-info">
+          <div class="product-name">Charcoal Slim Suit</div>
+          <div class="product-cat">Men · Formal</div>
+          <div class="product-footer"><span class="product-price">$450</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=5'">
+        <div class="product-img">👜<span class="product-badge">New</span></div>
+        <div class="product-info">
+          <div class="product-name">Velvet Evening Bag</div>
+          <div class="product-cat">Accessories · Bags</div>
+          <div class="product-footer"><span class="product-price">$145</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=6'">
+        <div class="product-img">🧤</div>
+        <div class="product-info">
+          <div class="product-name">Leather Gloves</div>
+          <div class="product-cat">Accessories</div>
+          <div class="product-footer"><span class="product-price">$75</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=7'">
+        <div class="product-img">🥼</div>
+        <div class="product-info">
+          <div class="product-name">Merino Wool Blazer</div>
+          <div class="product-cat">Men · Jackets</div>
+          <div class="product-footer"><span class="product-price">$320</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='product.html?id=8'">
+        <div class="product-img">👒<span class="product-badge">Sale</span></div>
+        <div class="product-info">
+          <div class="product-name">Wide Brim Hat</div>
+          <div class="product-cat">Accessories · Hats</div>
+          <div class="product-footer"><span class="product-price">$65</span><button class="add-btn" onclick="event.stopPropagation()">Add</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <span class="footer-logo">VELOUR</span>
+  <p>© 2026 VELOUR. All rights reserved.</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.filter-options').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
